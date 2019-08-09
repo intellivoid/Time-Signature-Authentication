@@ -77,7 +77,7 @@
          * @return string
          * @throws Base32DecodingException
          */
-        public function getCode($secret_signature, $timeSlice = null)
+        public static function getCode($secret_signature, $timeSlice = null)
         {
             if ($timeSlice === null)
             {
@@ -120,7 +120,7 @@
          * @return bool
          * @throws Base32DecodingException
          */
-        public function verifyCode($secret_signature, $code, $discrepancy = 1, $currentTimeSlice = null)
+        public static function verifyCode($secret_signature, $code, $discrepancy = 1, $currentTimeSlice = null)
         {
             if ($currentTimeSlice === null)
             {
@@ -134,7 +134,7 @@
 
             for ($i = -$discrepancy; $i <= $discrepancy; ++$i)
             {
-                $calculatedCode = $this->getCode($secret_signature, $currentTimeSlice + $i);
+                $calculatedCode = Crypto::getCode($secret_signature, $currentTimeSlice + $i);
 
                 if (Utilities::timingSafeEquals($calculatedCode, $code))
                 {
