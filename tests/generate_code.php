@@ -6,3 +6,6 @@
     print("Signature: " . $Signature . "\n");
 
     print("Code: " . \tsa\Classes\Crypto::getCode($Signature) . "\n");
+    print("URL: " . \tsa\Classes\Utilities::createQrCodeImage(
+            "Username", $Signature, "Intellivoid Accounts"
+        ) . "\n");

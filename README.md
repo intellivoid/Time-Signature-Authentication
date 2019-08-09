@@ -46,3 +46,18 @@ codes to verify logins
         // The code is incorrect        
     }
 ```
+
+
+### Create a QR Code
+```php
+<?PHP
+    $Source = __DIR__ . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'src' . DIRECTORY_SEPARATOR . 'tsa' . DIRECTORY_SEPARATOR . 'tsa.php';
+    include_once($Source);
+    
+    $Signature = \tsa\Classes\Crypto::BuildSecretSignature(32);
+    print("Signature: " . $Signature . "\n");
+    
+    print("URL: " . \tsa\Classes\Utilities::createQrCodeImage(
+        "Username", $Signature, "Intellivoid Accounts"
+    ) . "\n");
+```
