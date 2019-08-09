@@ -7,6 +7,7 @@
     use Exception;
     use tsa\Exceptions\BadLengthException;
     use tsa\Exceptions\Base32DecodingException;
+    use tsa\Exceptions\InvalidSecretException;
     use tsa\Exceptions\SecuredRandomProcessorNotFoundException;
 
     /**
@@ -75,16 +76,23 @@
          * @param $secret_signature
          * @param null $timeSlice
          * @return string
-         * @throws Base32DecodingException
+         * @throws InvalidSecretException
          */
-        public static function getCode($secret_signature, $timeSlice = null)
+        public static function getCode($secret_signature, $timeSlice = null): string
         {
             if ($timeSlice === null)
             {
                 $timeSlice = floor(time() / 30);
             }
 
-            $secretkey = Utilities::base32Decode($secret_signature);
+            try
+            {
+                $secretkey = Utilities::base32Decode($secret_signature);
+            }
+            catch(Base32DecodingException $base32DecodingException)
+            {
+                throw new InvalidSecretException();
+            }
 
             // Pack time into binary string
             $time = chr(0).chr(0).chr(0).chr(0).pack('N*', $timeSlice);
@@ -118,9 +126,8 @@
          * @param int $discrepancy
          * @param null $currentTimeSlice
          * @return bool
-         * @throws Base32DecodingException
          */
-        public static function verifyCode($secret_signature, $code, $discrepancy = 1, $currentTimeSlice = null)
+        public static function verifyCode($secret_signature, $code, $discrepancy = 1, $currentTimeSlice = null): bool
         {
             if ($currentTimeSlice === null)
             {
@@ -134,7 +141,14 @@
 
             for ($i = -$discrepancy; $i <= $discrepancy; ++$i)
             {
-                $calculatedCode = Crypto::getCode($secret_signature, $currentTimeSlice + $i);
+                try
+                {
+                    $calculatedCode = Crypto::getCode($secret_signature, $currentTimeSlice + $i);
+                }
+                catch(InvalidSecretException $invalidSecretException)
+                {
+                    return false;
+                }
 
                 if (Utilities::timingSafeEquals($calculatedCode, $code))
                 {
