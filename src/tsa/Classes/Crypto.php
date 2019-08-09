@@ -4,7 +4,9 @@
     namespace tsa\Classes;
 
 
+    use Exception;
     use tsa\Exceptions\BadLengthException;
+    use tsa\Exceptions\Base32DecodingException;
     use tsa\Exceptions\SecuredRandomProcessorNotFoundException;
 
     /**
@@ -22,6 +24,7 @@
          * @return string
          * @throws BadLengthException
          * @throws SecuredRandomProcessorNotFoundException
+         * @throws Exception
          */
         public static function BuildSecretSignature($secretLength = 16): string
         {
@@ -65,4 +68,82 @@
 
             return $secret;
         }
+
+        /**
+         * Generates a code from the secret signature
+         *
+         * @param $secret_signature
+         * @param null $timeSlice
+         * @return string
+         * @throws Base32DecodingException
+         */
+        public function getCode($secret_signature, $timeSlice = null)
+        {
+            if ($timeSlice === null)
+            {
+                $timeSlice = floor(time() / 30);
+            }
+
+            $secretkey = Utilities::base32Decode($secret_signature);
+
+            // Pack time into binary string
+            $time = chr(0).chr(0).chr(0).chr(0).pack('N*', $timeSlice);
+
+            // Hash it with users secret key
+            $hm = hash_hmac('SHA1', $time, $secretkey, true);
+
+            // Use last nipple of result as index/offset
+            $offset = ord(substr($hm, -1)) & 0x0F;
+
+            // grab 4 bytes of the result
+            $hashpart = substr($hm, $offset, 4);
+
+            // Unpak binary value
+            $value = unpack('N', $hashpart);
+            $value = $value[1];
+
+            // Only 32 bits
+            $value = $value & 0x7FFFFFFF;
+            $modulo = pow(10, 6);
+
+            return str_pad($value % $modulo, 6, '0', STR_PAD_LEFT);
+        }
+
+
+        /**
+         * Verifies the given code with the secret signature
+         *
+         * @param $secret_signature
+         * @param $code
+         * @param int $discrepancy
+         * @param null $currentTimeSlice
+         * @return bool
+         * @throws Base32DecodingException
+         */
+        public function verifyCode($secret_signature, $code, $discrepancy = 1, $currentTimeSlice = null)
+        {
+            if ($currentTimeSlice === null)
+            {
+                $currentTimeSlice = floor(time() / 30);
+            }
+
+            if (strlen($code) != 6)
+            {
+                return false;
+            }
+
+            for ($i = -$discrepancy; $i <= $discrepancy; ++$i)
+            {
+                $calculatedCode = $this->getCode($secret_signature, $currentTimeSlice + $i);
+
+                if (Utilities::timingSafeEquals($calculatedCode, $code))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+
     }
