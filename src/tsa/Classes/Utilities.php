@@ -5,9 +5,13 @@
 
 
     use tsa\Exceptions\Base32DecodingException;
-    use tsa\Exceptions\InvalidSecretException;
-    use tsa\Exceptions\SecuredRandomProcessorNotFoundException;
 
+    /**
+     * Utilities used by the crypto class
+     *
+     * Class Utilities
+     * @package tsa\Classes
+     */
     class Utilities
     {
 
