@@ -1,0 +1,51 @@
+{
+    "package": {
+        "package_name": "net.intellivoid.tsa",
+        "name": "Time Signature Authentication (TSA)",
+        "version": "1.0.0.0",
+        "author": "Zi Xing Narrakas",
+        "organization": "Intellivoid",
+        "description": "This library allows you to create time signature authentication codes to verify logins",
+        "url": "https://github.com/intellivoid/Time-Signature-Authentication",
+        "dependencies": [],
+        "configuration": {
+            "autoload_method": "indexed",
+            "main": null,
+            "post_installation": [],
+            "pre_installation": []
+        }
+    },
+    "components": [
+        {
+            "required": true,
+            "file": "Classes/Crypto.php"
+        },
+        {
+            "required": true,
+            "file": "Classes/Utilities.php"
+        },
+        {
+            "required": true,
+            "file": "Exceptions/BadLengthException.php"
+        },
+        {
+            "required": true,
+            "file": "Exceptions/Base32DecodingException.php"
+        },
+        {
+            "required": true,
+            "file": "Exceptions/InvalidSecretException.php"
+        },
+        {
+            "required": true,
+            "file": "Exceptions/SecuredRandomProcessorNotFoundException.php"
+        },
+        {
+            "required": true,
+            "file": "tsa.php"
+        }
+    ],
+    "files": [
+        "tsa.json"
+    ]
+}
