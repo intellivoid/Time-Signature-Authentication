@@ -4,7 +4,7 @@
     namespace tsa\Classes;
 
 
-    use tsa\Exceptions\Base32DecodingException;
+    use tsa\Exceptions\BaseDecodingException;
 
     /**
      * Utilities used by the crypto class
@@ -36,13 +36,13 @@
          *
          * @param $data
          * @return string
-         * @throws Base32DecodingException
+         * @throws BaseDecodingException
          */
         public static function base32Decode($data): string
         {
             if (empty($data))
             {
-                throw new Base32DecodingException();
+                throw new BaseDecodingException();
             }
 
             $base32chars = Utilities::getBase32LookupTable();
@@ -52,14 +52,14 @@
 
             if (!in_array($paddingCharCount, $allowedValues))
             {
-                throw new Base32DecodingException();
+                throw new BaseDecodingException();
             }
 
             for ($i = 0; $i < 4; ++$i) {
                 if ($paddingCharCount == $allowedValues[$i] &&
                     substr($data, -($allowedValues[$i])) != str_repeat($base32chars[32], $allowedValues[$i]))
                 {
-                    throw new Base32DecodingException();
+                    throw new BaseDecodingException();
                 }
             }
 
@@ -73,7 +73,7 @@
 
                 if (!in_array($data[$i], $base32chars))
                 {
-                    throw new Base32DecodingException();
+                    throw new BaseDecodingException();
                 }
 
                 for ($j = 0; $j < 8; ++$j)

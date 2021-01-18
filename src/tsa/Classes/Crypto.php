@@ -6,7 +6,7 @@
 
     use Exception;
     use tsa\Exceptions\BadLengthException;
-    use tsa\Exceptions\Base32DecodingException;
+    use tsa\Exceptions\BaseDecodingException;
     use tsa\Exceptions\InvalidSecretException;
     use tsa\Exceptions\SecuredRandomProcessorNotFoundException;
 
@@ -89,7 +89,7 @@
             {
                 $secretkey = Utilities::base32Decode($secret_signature);
             }
-            catch(Base32DecodingException $base32DecodingException)
+            catch(BaseDecodingException $base32DecodingException)
             {
                 throw new InvalidSecretException();
             }

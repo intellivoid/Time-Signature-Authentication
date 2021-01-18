@@ -4,9 +4,10 @@
     namespace tsa\Exceptions;
 
 
+    use Exception;
     use Throwable;
 
-    class Base32DecodingException extends \Exception
+    class BaseDecodingException extends Exception
     {
         public function __construct($code = 0, Throwable $previous = null)
         {
