@@ -39,10 +39,6 @@
         {
             "required": true,
             "file": "Exceptions/BaseDecodingException.php"
-        },
-        {
-            "required": true,
-            "file": "tsa.php"
         }
     ],
     "files": [
